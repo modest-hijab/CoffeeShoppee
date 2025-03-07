@@ -4,6 +4,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f5d20a;
     background: url('images/your-background-image.jpg') no-repeat center center fixed;
     background-size: cover;
   }
@@ -36,7 +37,7 @@ body {
   }
   
   .background {
-    background-color: rgb(255, 255, 255);
+    background-color: #f5d20a;
     padding: 90px;
     border-radius: 90px;
     box-shadow: 0 0 90px rgba(0, 0, 0, 0.1);
