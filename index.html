@@ -4,161 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoffeeShoppee</title>
-
-     <link rel="stylesheet" href="styles.css">
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="js/planetaryjs.min.js"></script>
+    <script type="module">
+        // Import the necessary Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
     
-
-
-
-
-    <script type='text/javascript' src='http://d3js.org/d3.v3.min.js'></script>
-    <script type='text/javascript' src='http://d3js.org/topojson.v1.min.js'></script>
-    <script src="js/planetaryjs.min.js"></script>  
-  
-    <!-- <script type="text/javascript" src="./planetaryjs-objects.js"></script> -->
-  <script> planetaryjs.plugins.objects = function(config) {
-    var objects = [];
-    config = config || {};
-console.log("ping")
-    var addObject = function(lng, lat, options) {
-      options = options || {};
-      
-      options.speed = options.speed || config.speed || 0;
-      options.imagesrc = options.imagesrc || config.imagesrc || "";
-      options.imagewidth = options.imagewidth || config.imagewidth || 50;
-      options.imageheight = options.imageheight || config.imageheight || 50;
-      options.fade = options.fade || config.fade || false;
-
-      var ping = { time: new Date(), options: options };
-      if (config.latitudeFirst) {
-        ping.lat = lng;
-        ping.lng = lat;
-      } else {
-        ping.lng = lng;
-        ping.lat = lat;
-      }
-      objects.push(ping);
-    };
-
-    var drawobjects = function(planet, context, now) {
-      var newobjects = [];
-      for (var i = 0; i < objects.length; i++) {
-        var object = objects[i];
-        var timechange = now - object.time;
-        newobjects.push(object);
-        drawobject(planet, context, now, timechange, object);
-        
-      }
-      objects = newobjects;
-    };
-
-    var drawobject = function(planet, context, now, timechange, object) {
-      
-      //If Speed is greater than 0 animate object on lng/x axis
-      var newlng = 0
-      if(object.options.speed > 0){
-        var xmove = (timechange*(object.options.speed))/100;
-        newlng = (object.lng+xmove)
-      } else {
-        newlng = object.lng
-      }
-      
-      //Get Spherical Coords from lat lng
-      var coords = planet.projection([newlng, object.lat])  
-      var img = new Image()
-      img.src = object.options.imagesrc;
-      
-
-      var geoangle = d3.geo.distance([newlng, object.lat],[-planet.projection.rotate()[0], -planet.projection.rotate()[1]]);
-
-      //closeness used for fading
-      var closeness = 1.57079632679490 - geoangle;
-
-      if (geoangle > 1.57079632679490)
-      {
-          //Behind Sphere > 90 degrees
-      } else {
-
-         var imagewidth = object.options.imagewidth;
-         var imageheight = object.options.imageheight;
-
-         if(object.options.fade == true){
-           if(closeness < 0.1){
-            context.globalAlpha = closeness*10;
-           }
-         }
-
-         context.drawImage(img, (coords[0]-(imagewidth/2)) ,(coords[1]-(imageheight/2)), imagewidth ,imageheight)
-         context.globalAlpha = 1
-         //If fade is true fade out and in
-         
-
-          
-
-
-
-      }
-              
-
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCDh4qU36Z0-dkh2ozn9pcP6dxUCT4dZNo",
+            authDomain: "coffeeshoppee-b3a30.firebaseapp.com",
+            databaseURL: "https://coffeeshoppee-b3a30-default-rtdb.firebaseio.com/",
+            projectId: "coffeeshoppee-b3a30",
+            storageBucket: "coffeeshoppee-b3a30.firebasestorage.app",
+            messagingSenderId: "580826414775",
+            appId: "1:580826414775:web:86a502b789b735af05d732"
+        };
     
+           // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    };
+    // Store the fun facts in an array
+    let funFacts = [];
 
-    return function (planet) {
-      planet.plugins.objects = {
-        add: addObject,
-        objectList: objects
-      };
-
-      planet.onDraw(function() {
-           planet.plugins.objects = {
-            add: addObject,
-            objectList: objects
-          };
-
-        var now = new Date();
-        planet.withSavedContext(function(context) {
-          drawobjects(planet, context, now);
-        });
+    // Function to fetch fun facts from Firestore
+    async function fetchFunFacts() {
+      const querySnapshot = await getDocs(collection(db, 'fun_facts'));
+      querySnapshot.forEach((doc) => {
+        funFacts.push(doc.data().fact);  // Store each fact in the array
       });
+// Start displaying fun facts after they're fetched
+      displayFunFact();
+    }
+
+    // Function to display a single fun fact at a time
+    let currentFactIndex = 0;
+    function displayFunFact() {
+      const factElement = document.getElementById('funFact');
+      factElement.textContent = funFacts[currentFactIndex];  // Display the current fun fact
+// Update to the next fact after 5 seconds
+      currentFactIndex = (currentFactIndex + 1) % funFacts.length;  // Loop back to the first fact when done
+    }
+
+    // Fetch and display fun facts when the page loads
+    window.onload = async () => {
+      await fetchFunFacts();
+      setInterval(displayFunFact, 5000);  // Change the fact every 5 seconds
     };
-  };</script>
+        </script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        planetaryjs.plugins.objects = function(config) {
+            var objects = [];
+            config = config || {};
+            console.log("ping");
+            const addObject = (lng, lat, options = {}) => {
+                options.speed = options.speed || config.speed || 0;
+                options.imagesrc = options.imagesrc || config.imagesrc || "";
+                options.imagewidth = options.imagewidth || config.imagewidth || 50;
+                options.imageheight = options.imageheight || config.imageheight || 50;
+                options.fade = options.fade || config.fade || false;
+
+                objects.push({
+                    time: new Date(),
+                    options,
+                    lng: config.latitudeFirst ? lat : lng,
+                    lat: config.latitudeFirst ? lng : lat
+                });
+            };
+
+            const drawObjects = (planet, context, now) => {
+                objects = objects.map(object => {
+                    const timeChange = now - object.time;
+                    drawObject(planet, context, timeChange, object);
+                    return object;
+                });
+            };
+
+            const drawObject = (planet, context, timeChange, object) => {
+                const newLng = object.options.speed > 0
+                    ? object.lng + (timeChange * object.options.speed) / 100
+                    : object.lng;
+
+                const coords = planet.projection([newLng, object.lat]);
+                const img = new Image();
+                img.src = object.options.imagesrc;
+
+                const geoAngle = d3.geo.distance(
+                    [newLng, object.lat],
+                    [-planet.projection.rotate()[0], -planet.projection.rotate()[1]]
+                );
+
+                if (geoAngle > 1.57) return;
+
+                if (object.options.fade) {
+                    const closeness = 1.57 - geoAngle;
+                    context.globalAlpha = closeness < 0.1 ? closeness * 10 : 1;
+                }
+
+                context.drawImage(
+                    img,
+                    coords[0] - object.options.imagewidth / 2,
+                    coords[1] - object.options.imageheight / 2,
+                    object.options.imagewidth,
+                    object.options.imageheight
+                );
+
+                context.globalAlpha = 1;
+            };
+
+            return planet => {
+                planet.plugins.objects = { add: addObject, objectList: objects };
+                planet.onDraw(() => {
+                    planet.withSavedContext(context => drawObjects(planet, context, new Date()));
+                });
+            };
+        };
+    </script>
     
-    <style>
-        #rotatingGlobe {
-            width: 400px;
-            height: 400px;
-            cursor: move;
-        }
-    </style>
 </head>
-
-<body class="background">
+<body>
     
-
-    <h1 class="websitename">CoffeeShoppee</h1>
-        <div class="container1">
-            
-
-
-       
-
-        <article>
-            <img src = "images\image.webp"></image>
-        </article>
-
-        <div id="recipeModal" class="container2"></div> 
-    
-<canvas id="rotatingGlobe" width="400" height="400"></canvas> 
-
-</div>
-        
-<script src="js/rotatingplanet.js"></script>         
-
-</body>
-
+<center>
+<nav>
+    <br>
+    <img src="images/Designer (1).png" width="400" alt="CoffeeShoppee Logo" class="logo"><br><br><br>
+    <div class="flexcontainer">
+        <div class="flexbox">
+            <h2>Fun Facts</h2>
+            <ul id="funFact">
+                <!-- Fun facts will be displayed here -->
+              </ul>
+            <br>
+            <a href="submissionform.html"> Submit Recipe </a>
+        </div>
+        <div class="flexbox">
+            <div class="globe">
+                <div id="recipeModal" class="container2"></div>
+                <canvas id="rotatingGlobe" width="450" height="450"></canvas>
+            </div>
+        </div>
+    </div>
+</nav>
+<br>
 <footer>
-    <div id="socialMedia"></div>
+    <div class="footer-container">
+        <div class="footer-column">
+            <h2>About CoffeeShoppee</h2>
+            <p>CoffeeShoppee is your destination for exploring unique coffee recipes from around the world. Join us to experience the rich aroma and flavors of coffee cultures worldwide!</p>
+        </div>
+        <div class="footer-column">
+            <h2>Contact Us</h2>
+            <form>
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name"><br>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email"><br>
+                <label for="message">Message:</label><br>
+                <textarea id="message" name="message"></textarea><br>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
 </footer>
-
+<script src="js/rotatingplanet.js"></script>
+</body>
 </html>

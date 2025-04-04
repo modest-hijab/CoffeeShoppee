@@ -1,8 +1,23 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 20px;
     background-color: #f5d20a;
+}
+
+label {
+    font-weight: bold;
+    color: #332c01;
+}
+
+input[type="text"], input[type="email"], input[type="number"], textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #40441d;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 16px;
 }
 
 #form-title {
@@ -30,4 +45,27 @@ body {
     align-items: center;
     flex-direction: column;
     margin-top: 20px;
+}
+button,
+a ,select,input[type="file"] {
+  font-size: 10px;
+  padding: 10px;
+  background-color: #6f4e37;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-top: 10px;
+}
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    form {
+        width: 100%
+    }
+    input[type="text"], input[type="email"] {
+        font-size: 12px
+
+    }
 }

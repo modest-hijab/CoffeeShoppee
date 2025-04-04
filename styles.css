@@ -1,94 +1,120 @@
-@import url("../css/reset.css");
-
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-size: cover;
-  }
-  
-  .websitename {
-    font-size: 2em;
-    font-style: normal;
-    color: #f5d20a;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 20px;
-    
-  }
-  
-  .container1 {
-    background-color: rgb(205, 39, 58);
-    position: relative; /* Set the parent container for relative positioning added test */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 20px;
-    
-    
-  }
-
-  .container1 img {
-    width: 100%; /* Make the image responsive  added test*/
-    height: auto; /* Maintain aspect ratio   added test*/
-  }
-
-  
-
-
-
-      
-#rotatingGlobe {
-    position: absolute; /* Positions the globe relative to the container */
-    top: 30%; /* Adjusts to vertically align the globe inside the cup */
-    left: 75.4%; /* Adjusts to horizontally align the globe inside the cup */
-    transform: translate(-50%, -50%); /* Centers the globe */
-    width: 32%; /* Adjusts size relative to the coffee cup */
-    height: auto; /* Maintains aspect ratio */
+  background: linear-gradient(90deg, #7d0a0a 17%, #bf3131 48%);
+  font-family: sans-serif;
+  height: 100vh;
+}
+.flexcontainer {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  gap: 20px;
+  justify-content: center;
+}
+.flexbox {
+  padding: 20px;
+  background: #8c1c1c;
+  border-radius: 10px;
+  flex: 1 1 300px;
+  max-width: 400px;
+}
+.flexbox > p,
+.flexbox > h2 {
+  color: white;
+  margin-bottom: 10px;
+}
+.globe canvas {
+  max-width: 100%;
+  height: auto;
+}
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
 }
 
-  
-  .container2 {
-    background-color: #f5d20a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#funFact{
+  background-color: #f0f0f0;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.container2 .video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  background-color: black;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.container2 .video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 10px;
+}
+footer {
+  background: #7d0a0a;
+  padding: 20px;
+  color: white;
+  margin-top: 21.5%;
+}
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+}
+.footer-column {
+  flex: 1;
+  padding: 10px;
+}
+button,
+a {
+  font-size: 20px;
+  padding: 10px;
+  background-color: #6f4e37;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-top: 10px;
+}
+@media (max-width: 600px) {
+  .flexcontainer {
     flex-direction: column;
-    margin-top: 20px;
+    align-items: center;
   }
-  
-  .background {
-    background-color: rgb(255, 255, 255);
-    padding: 90px;
-    border-radius: 90px;
-    box-shadow: 0 0 90px rgba(0, 0, 0, 0.1);
-  }
-  
-
-  
-  @media (max-width: 600px) {
-    .background {
-      background-image: url('images/Coffeebeans.jpg');
-      background-color: rgb(255, 255, 255);
-      padding: 90px;
-      border-radius: 90px;
-      box-shadow: 0 0 90px rgba(0, 0, 0, 0.1);
-    }
-
-    #rotatingGlobe {
-      width: 70%; /* Resize the globe on smaller screens added test */
-    }
-
-    .container1 img {
-      width: 90%; /* Adjust image size for mobile added test */
-    }
-  
-    .globe {
-      height: 200px;
-    }
-
-
-    
-  }
-  
+}

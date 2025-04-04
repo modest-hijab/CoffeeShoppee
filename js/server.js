@@ -1,41 +1,47 @@
-const express = require('express'); //Express is server
-const mongoose = require('mongoose'); //Mongoose is a library that helps us interact with MongoDB, tools to use
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+require("dotenv").config();
 
-require('dotenv').config(); //dotenv is a library that helps us read environment variables from a .env file
-const CoffeeRecipe = require('../server/models/CoffeeRecipe'); //importing the CoffeeRecipe model
+const app = express();
+app.use(express.json());
+app.use(cors());
 
-const app = express(); //creating an express app, different server functionalities 
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-const port = process.env.PORT || 3000; //setting the port , difference channels
+// Define Schema and Model
+const coffeeFunFactSchema = new mongoose.Schema({
+  funfact: String,  // Make sure this matches your collection
+  source: String
+});
 
+const CoffeeFunFact = mongoose.model("coffeefunfacts", coffeeFunFactSchema);
 
-app.use(express.json()); // makes it understand json
+// API Route to Get a Random Fun Fact
+app.get("/funfact", async (req, res) => {
+  try {
+    const facts = await CoffeeFunFact.find();
+    if (facts.length === 0) {
+      return res.status(404).json({ error: "No fun facts available" });
+    }
 
-mongoose.connect(process.env.MONGODB_URI) // connecting to the database - hidden for security
-    .then(() => {
-        console.log('Connected to MongoDB'); // if it connects, it will log this
-    })
-    .catch((err) => {
-        console.log(err); // if it doesn't connect, it will log the error
-    });
+    const randomFact = facts[Math.floor(Math.random() * facts.length)];
+    res.json(randomFact);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching fun facts");
+  }
+});
 
+// Test Route
+app.get("/", (req, res) => {
+  res.send("API is working!");
+});
 
-app.get('/api/coffee-recipes', async (req, res) => {
-    const coffeeRecipes = await CoffeeRecipe.find();
-    res.send(coffeeRecipes);
-}); // get request to get all the coffee recipes from database
-
-app.post('/api/coffee-recipes', async (req, res) => {
-    const coffeeRecipe = new CoffeeRecipe({
-        name: req.body.name,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-    });
-    await coffeeRecipe.save();
-    res.send(coffeeRecipe);
-}); // post request to add a coffee recipe to the database, creates a new document
-
-app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
-}); // server is listening on the port, and logs that it is running on that port
-
+// Start Server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

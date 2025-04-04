@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
+const pantryUrl = process.env.PANTRY_API_URL;
 
 const coffeeRecipeSchema = new mongoose.Schema({
     name: {
