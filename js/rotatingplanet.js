@@ -25,7 +25,7 @@
  //   scaleExtent: [300, 300]
   //}));
   globe.loadPlugin(planetaryjs.plugins.drag({
-    // Pause autorotation while dragging.
+    //   autorotation while dragging.
     onDragStart: function() {
       this.plugins.autorotate.pause();
     },
@@ -69,8 +69,8 @@
             if (x && y) {
                 globe.plugins.objects.add(ping.lng, ping.lat, {
                     imagesrc: "images/what transp bean.webp",
-                    imagewidth: 10, // Adjusted size
-                    imageheight: 10 // Adjusted size
+                    imagewidth: 16, // Adjusted size
+                    imageheight: 16 // Adjusted size
                 });
             } else {
                 console.error("Invalid coordinates for ping:", ping);

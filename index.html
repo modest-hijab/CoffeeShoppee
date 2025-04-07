@@ -52,7 +52,7 @@
     // Fetch and display fun facts when the page loads
     window.onload = async () => {
       await fetchFunFacts();
-      setInterval(displayFunFact, 5000);  // Change the fact every 5 seconds
+      setInterval(displayFunFact, 3000);  // Change the fact every 5 seconds
     };
         </script>
     <link rel="stylesheet" href="styles.css">
@@ -64,7 +64,7 @@
             const addObject = (lng, lat, options = {}) => {
                 options.speed = options.speed || config.speed || 0;
                 options.imagesrc = options.imagesrc || config.imagesrc || "";
-                options.imagewidth = options.imagewidth || config.imagewidth || 50;
+                // options.imagewidth = options.imagewidth || config.imagewidth || 50; rouge bean?
                 options.imageheight = options.imageheight || config.imageheight || 50;
                 options.fade = options.fade || config.fade || false;
 
